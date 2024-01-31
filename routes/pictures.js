@@ -54,8 +54,6 @@ router.post('/', async function(req, res, next) {
 });
 
 
-
-
 /* Saving files localy
 router.get('/', function(req, res, next) {
   
