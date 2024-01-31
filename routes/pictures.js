@@ -13,13 +13,13 @@ router.get('/', async function(req, res, next) {
     The listObjects() method will return the basic info of all files in the directory of the provided prefix (in this case, the public directory). 
     We can extract the keys of each file from it and later call the s3.getObject() method for each key.
   */
-  var params = {
-    Bucket: process.env.CYCLIC_BUCKET_NAME,
-    Delimiter: '/',
-    Prefix: 'public/'
-  };
-  var allObjects = await s3.listObjects(params).promise();
-  var keys = allObjects?.Contents.map( x=> x.Key)
+ var params = {
+  Bucket: process.env.CYCLIC_BUCKET_NAME,
+  Delimiter: '/',
+  Prefix: 'public/'
+};
+var allObjects = await s3.listObjects(params).promise();
+var keys = allObjects?.Contents.map( x=> x.Key)
   /*
   After getting the keys, we need to ask for the details of each object. 
     We will use the Promise.all() method to wait until all promises finish, and we will save each file’s content and name:
@@ -41,7 +41,6 @@ router.get('/:pictureName', function(req, res, next) {
   res.render('pictureDetails', { picture: req.params.pictureName});
 });
 
-
 router.post('/', async function(req, res, next) {
   const file = req.files.file;
   console.log(req.files);
@@ -52,7 +51,6 @@ router.post('/', async function(req, res, next) {
   }).promise()
   res.end();
 });
-
 
 /* Saving files localy
 router.get('/', function(req, res, next) {
