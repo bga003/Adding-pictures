@@ -1,18 +1,29 @@
 var express = require('express');
 var router = express.Router();
-const fs = require('fs');
-var path = require('path');
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3()
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  /*
-  We need to set the pictures variable before we pass it to the views. 
-    To do so:
-      Read the names of all the files in the pictures folder with 
-      the readdirfiles method in both router files:
-  */
-  const pictures = fs.readdirSync(path.join(__dirname, '../pictures/')).slice(0, 3); // On the main page, we want to display only three images, so let’s cut the pictures array into three elements using the slice() method:
-  res.render('index', { pictures: pictures, title: 'Express' });
+router.get('/', async function(req, res, next) {
+  var params = {
+    Bucket: process.env.CYCLIC_BUCKET_NAME,
+    Delimiter: '/',
+    Prefix: 'public/'
+  };
+  var allObjects = await s3.listObjects(params).promise();
+  var keys = allObjects?.Contents.map( x=> x.Key).slice(0,3);
+
+  const pictures = await Promise.all(keys.map(async (key) => {
+    let my_file = await s3.getObject({
+      Bucket: process.env.CYCLIC_BUCKET_NAME,
+      Key: key,
+    }).promise();
+    return {
+        src: Buffer.from(my_file.Body).toString('base64'),
+        name: key.split("/").pop()
+    }
+  }))
+  res.render('index', { pictures: pictures });
 });
 
 module.exports = router;
