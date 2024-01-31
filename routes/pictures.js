@@ -37,10 +37,6 @@ var keys = allObjects?.Contents.map( x=> x.Key)
   res.render('pictures', { pictures: pictures});
 });
 
-router.get('/:pictureName', function(req, res, next) {
-  res.render('pictureDetails', { picture: req.params.pictureName});
-});
-
 router.post('/', async function(req, res, next) {
   const file = req.files.file;
   console.log(req.files);
@@ -52,26 +48,4 @@ router.post('/', async function(req, res, next) {
   res.end();
 });
 
-/* Saving files localy
-router.get('/', function(req, res, next) {
-  
-  We need to set the pictures variable before we pass it to the views. 
-    To do so:
-      Read the names of all the files in the pictures folder with 
-      the readdirfiles method in both router files:
-  
-  const pictures = fs.readdirSync(path.join(__dirname, '../pictures/'));
-  res.render('pictures', { pictures: pictures});
-});
-
-router.get('/:pictureName', function(req, res, next) {
-  res.render('pictureDetails', { picture: req.params.pictureName});
-});
-
-router.post('/', function(req, res, next) {
-  const file = req.files.file;
-  fs.writeFileSync(path.join(__dirname, '../pictures/', file.name), file.data);
-  res.end();
-});
-*/
 module.exports = router;
