@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3()
+const { requiresAuth } = require('express-openid-connect');
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {

@@ -4,10 +4,11 @@ const fs = require('fs');
 var path = require('path');
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3()
+const { requiresAuth } = require('express-openid-connect');
 
 // Or
 /* GET pictures listing. */
-router.get('/', async function(req, res, next) {
+router.get('/', requiresAuth(), async function(req, res, next) {
   /*
   First, we need to set the bucket and folder prefixes.
     The listObjects() method will return the basic info of all files in the directory of the provided prefix (in this case, the public directory). 
@@ -37,7 +38,7 @@ var keys = allObjects?.Contents.map( x=> x.Key)
   res.render('pictures', { pictures: pictures});
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', requiresAuth(), async function(req, res, next) {
   const file = req.files.file;
   console.log(req.files);
   await s3.putObject({
